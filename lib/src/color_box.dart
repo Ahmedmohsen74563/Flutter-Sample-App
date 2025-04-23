@@ -65,14 +65,11 @@ class _ColorBoxState extends State<ColorBox> {
                     icon: const Icon(Icons.copy, size: 24),
                     onPressed: () async {
                       final messenger = ScaffoldMessenger.of(context);
-                      // Copy color as hex to clipboard
                       final c = widget.color;
-
                       final hex =
-                          '#${_colorChannelToHex(c.r)}'
-                          '${_colorChannelToHex(c.g)}'
-                          '${_colorChannelToHex(c.b)}';
-
+                          '#${_colorChannelToHex(c.red)}'
+                          '${_colorChannelToHex(c.green)}'
+                          '${_colorChannelToHex(c.blue)}';
                       final data = ClipboardData(text: hex);
                       await Clipboard.setData(data);
                       messenger.hideCurrentSnackBar();
@@ -90,7 +87,6 @@ class _ColorBoxState extends State<ColorBox> {
   }
 }
 
-String _colorChannelToHex(double value) {
-  final intVal = (value * 255).round();
-  return intVal.toRadixString(16).padLeft(2, '0');
+String _colorChannelToHex(int value) {
+  return value.toRadixString(16).padLeft(2, '0');
 }
