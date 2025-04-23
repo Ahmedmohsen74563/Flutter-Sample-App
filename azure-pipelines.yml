@@ -18,7 +18,7 @@ steps:
     mode: 'auto'
     channel: 'stable'
     version: 'custom'
-    customVersion: '2.19'
+    customVersion: '3.7.0'
 
 # ----------------------------------------
 # STEP 2: Verify Flutter & Install Dependencies
