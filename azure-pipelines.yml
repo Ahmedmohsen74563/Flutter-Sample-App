@@ -4,27 +4,35 @@ trigger:
       - main  # Runs when main branch is updated
 
 pool:
-  vmImage: 'ubuntu-latest'  # You can switch to macOS for iOS builds
+  vmImage: 'ubuntu-latest'  # Use Ubuntu, macOS, or Windows depending on your needs
 
 variables:
-  flutterVersion: 'master'  # Use Flutter master channel for pre-release support
+  flutterVersion: 'master'  # Change this to a stable version if required
 
 steps:
 # ----------------------------------------
 # STEP 1: Install Flutter from the master channel
 # ----------------------------------------
 - script: |
+    # Clone the Flutter repository from the master branch
     git clone https://github.com/flutter/flutter.git -b ${{ variables.flutterVersion }} --depth 1
-    echo "##vso[task.setvariable variable=FLUTTER_HOME]$(pwd)/flutter"
-    export PATH="$FLUTTER_HOME/bin:$PATH"  # Set Flutter path
-    flutter --version  # Verify installation
+
+    # Set FLUTTER_HOME to point to the Flutter directory
+    export FLUTTER_HOME=$(pwd)/flutter
+    export PATH="$FLUTTER_HOME/bin:$PATH"  # Add Flutter binary to PATH
+
+    # Check Flutter version to confirm it installed correctly
+    flutter --version
   displayName: 'Install Flutter Master'
 
 # ----------------------------------------
 # STEP 2: Accept Android SDK Licenses (if needed)
 # ----------------------------------------
 - script: |
-    export PATH="$FLUTTER_HOME/bin:$PATH"  # Ensure Flutter is in PATH
+    # Ensure Flutter is in PATH for subsequent commands
+    export PATH="$FLUTTER_HOME/bin:$PATH"
+    
+    # Accept Android SDK Licenses
     flutter doctor --android-licenses
   displayName: 'Accept Android SDK Licenses'
 
@@ -32,15 +40,25 @@ steps:
 # STEP 3: Verify Flutter & Install Dependencies
 # ----------------------------------------
 - script: |
+    # Ensure Flutter is in PATH
+    export PATH="$FLUTTER_HOME/bin:$PATH"
+
+    # Verify Flutter installation
     flutter --version
-    flutter pub get  # Install dependencies defined in pubspec.yaml
+
+    # Install dependencies from pubspec.yaml
+    flutter pub get
   displayName: 'Setup Flutter and Install Dependencies'
 
 # ----------------------------------------
 # STEP 4: Build APK (for Android)
 # ----------------------------------------
 - script: |
-    flutter build apk --release  # Build APK for Android (uncomment for iOS if needed)
+    # Ensure Flutter is in PATH for the build command
+    export PATH="$FLUTTER_HOME/bin:$PATH"
+    
+    # Build APK for Android release
+    flutter build apk --release
   displayName: 'Build APK Release'
 
 # ----------------------------------------
