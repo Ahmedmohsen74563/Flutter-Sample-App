@@ -23,10 +23,13 @@ if (flutterVersionName == null) {
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-parcelize' // Add for better Kotlin support
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    compileSdkVersion 33 // ✅ Bumped to match dependency requirements
+    compileSdkVersion 33
+
+    ndkVersion "25.1.8937393" // Explicit NDK version for stability
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -34,10 +37,11 @@ android {
 
     defaultConfig {
         applicationId "com.example.nogozo_shopping_app"
-        minSdkVersion 21              // ✅ Updated from 16 to 21 for better compatibility
-        targetSdkVersion 33           // ✅ Match compileSdkVersion
+        minSdkVersion 21
+        targetSdkVersion 33
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        multiDexEnabled true // Required for newer Android versions
     }
 
     compileOptions {
@@ -47,11 +51,17 @@ android {
 
     kotlinOptions {
         jvmTarget = '11'
+        freeCompilerArgs += [
+            '-Xjvm-default=all', // Better Java interoperability
+            '-opt-in=kotlin.RequiresOptIn' // For experimental APIs
+        ]
     }
 
     buildTypes {
         release {
             signingConfig signingConfigs.debug
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 }
@@ -61,5 +71,20 @@ flutter {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    // Updated Kotlin dependencies
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22" // Changed from jdk7 to jdk8
+    
+    // Required for multi-dex support
+    implementation 'androidx.multidex:multidex:2.0.1'
+    
+    // Window manager dependencies (stable versions)
+    implementation 'androidx.window:window:1.1.0'
+    implementation 'androidx.window:window-java:1.1.0'
+    
+    // Kotlin coroutines
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
+    
+    // Core KTX for better Kotlin support
+    implementation 'androidx.core:core-ktx:1.10.1'
 }
