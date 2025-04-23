@@ -35,6 +35,11 @@ steps:
     jdkSourceOption: 'PreInstalled'
   displayName: 'Use Java 11'
   # ----------------------------------------
+- script: |
+    flutter clean
+    rm -rf ~/.gradle/caches/
+    ./gradlew clean
+  displayName: 'Clean Build Environment'
   
 # STEP 4: Build APK/IPA
 # ----------------------------------------
