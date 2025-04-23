@@ -7,7 +7,7 @@ pool:
   vmImage: 'ubuntu-latest'  # Use 'macOS-latest' for iOS
 
 variables:
-  flutterVersion: '3.7.10'  # Specify a compatible Flutter version
+  flutterVersion: '3.13.0'  # Specify a compatible Flutter version with Dart 3.x
 
 steps:
 # ----------------------------------------
