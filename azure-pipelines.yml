@@ -7,7 +7,7 @@ pool:
   vmImage: 'ubuntu-latest'  # Use 'macOS-latest' for iOS
 
 variables:
-  flutterVersion: '3.13.0'  # Specify Flutter version
+  flutterVersion: '3.19.0'  # Specify Flutter version
 
 steps:
 # ----------------------------------------
