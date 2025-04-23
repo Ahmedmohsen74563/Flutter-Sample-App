@@ -1,22 +1,22 @@
 trigger:
   branches:
     include:
-      - main  # Runs when main branch is updated
+      - main
 
 pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  flutterVersion: '3.19.6'
+  flutterChannel: 'master'
 
 steps:
 # ----------------------------------------
-# STEP 1: Install Flutter SDK
+# STEP 1: Install Flutter (from master)
 # ----------------------------------------
 - script: |
-    git clone https://github.com/flutter/flutter.git -b ${{ variables.flutterVersion }} --depth 1
+    git clone https://github.com/flutter/flutter.git --branch ${{ variables.flutterChannel }} --depth 1
     echo "##vso[task.setvariable variable=FLUTTER_HOME]$(pwd)/flutter"
-  displayName: 'Install Flutter'
+  displayName: 'Clone Flutter (master branch)'
 
 # ----------------------------------------
 # STEP 2: Setup Flutter & Install Dependencies
@@ -27,11 +27,8 @@ steps:
     flutter --version
     dart --version
 
-    # Ensure pubspec.yaml allows Dart 3.3.0+ (required)
-    sed -i 's/sdk: .*/sdk: ">=3.3.0 <4.0.0"/' pubspec.yaml
-
     flutter pub get
-  displayName: 'Setup Flutter'
+  displayName: 'Setup Flutter and Fetch Dependencies'
 
 # ----------------------------------------
 # STEP 3: Build APK
@@ -42,7 +39,7 @@ steps:
   displayName: 'Build Release APK'
 
 # ----------------------------------------
-# STEP 4: Publish APK
+# STEP 4: Publish APK Artifact
 # ----------------------------------------
 - task: CopyFiles@2
   inputs:
