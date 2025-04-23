@@ -1,13 +1,13 @@
 trigger:
   branches:
     include:
-      - main  # Runs when main branch is updated
+      - main  # Runs when the main branch is updated
 
 pool:
   vmImage: 'ubuntu-latest'  # Use 'macOS-latest' for iOS
 
 variables:
-  flutterVersion: '3.19.6'  # Specify Flutter version
+  flutterVersion: '3.7.10'  # Specify a compatible Flutter version
 
 steps:
 # ----------------------------------------
