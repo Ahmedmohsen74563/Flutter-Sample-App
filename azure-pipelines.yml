@@ -29,9 +29,10 @@ steps:
 # ----------------------------------------
 # STEP 3:Downgrade Java
 - script: |
+    sudo update-alternatives --install /usr/bin/java java /usr/lib/jvm/java-11-openjdk-amd64/bin/java 1
     sudo update-alternatives --set java /usr/lib/jvm/java-11-openjdk-amd64/bin/java
-    java -version  # Verify Java 11
-  displayName: 'Set Java 11'
+    java -version
+  displayName: 'Switch to Java 11'
   # ----------------------------------------
   
 # STEP 4: Build APK/IPA
