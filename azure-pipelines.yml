@@ -1,0 +1,53 @@
+trigger:
+  branches:
+    include:
+      - main  # Runs when the main branch is updated
+
+pool:
+  vmImage: 'ubuntu-latest'  # Use 'macOS-latest' for iOS
+
+variables:
+  flutterVersion: '3.7.0'  # Explicitly use Flutter 3.7.0 to match the SDK requirement
+
+steps:
+# ----------------------------------------
+# STEP 1: Install Flutter SDK
+# ----------------------------------------
+- script: |
+    git clone https://github.com/flutter/flutter.git -b ${{ variables.flutterVersion }} --depth 1
+    echo "##vso[task.setvariable variable=FLUTTER_HOME]$(pwd)/flutter"
+  displayName: 'Install Flutter'
+
+# ----------------------------------------
+# STEP 2: Verify Flutter & Install Dependencies
+# ----------------------------------------
+- script: |
+    export PATH="$FLUTTER_HOME/bin:$PATH"
+    flutter --version
+    flutter pub get
+  displayName: 'Setup Flutter'
+
+# ----------------------------------------
+# STEP 3: Build APK
+# ----------------------------------------
+- script: |
+    export PATH="$FLUTTER_HOME/bin:$PATH"
+    flutter build apk --release  # For Android
+    # flutter build ios --release --no-codesign  # For iOS (uncomment if needed)
+  displayName: 'Build Release App'
+
+# ----------------------------------------
+# STEP 4: Publish APK
+# ----------------------------------------
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: 'build/app/outputs/flutter-apk/'
+    Contents: '*.apk'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
+
