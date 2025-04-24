@@ -7,7 +7,6 @@ pool:
   vmImage: 'ubuntu-latest'  # Use 'macOS-latest' for iOS
 
 
-
 steps:
 
 # ----------------------------------------
@@ -23,9 +22,15 @@ steps:
 # ----------------------------------------
 # STEP 2: Verify Flutter & Install Dependencies
 # ----------------------------------------
+# STEP 2: Verify Flutter & Install Dependencies
+- script: |
+    export PATH="$FLUTTER_HOME/bin:$PATH"    # Tell where is the flutter binary so you can run flutter commands
+    flutter --version
+    flutter doctor -v  # ✅ Run doctor for diagnostics
+  displayName: 'Setup Flutter & Run Diagnostics'
+
 - script: |
     export PATH="$FLUTTER_HOME/bin:$PATH"
-    flutter --version
     flutter pub get
   displayName: 'Setup Flutter'
 
